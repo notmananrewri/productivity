@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Productivity Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./calendar.css" />
+  <link rel="stylesheet" href="./todo.css" />
+  <link rel="stylesheet" href="./dashboard.css" />
+  <link rel="shortcut icon" href="./logo.svg" type="image/x-icon">
+</head>
+<body>
+  <nav>
+    <button data-tab="dashboard">Dashboard</button>
+    <button data-tab="pomodoro">Pomodoro</button>
+    <button data-tab="calendar">Calendar</button>
+    <button data-tab="todo">To-Do</button>
+    <button data-tab="lifetime-todo">Lifetime To-Do</button>
+  </nav>
+
+  <main>
+    <section id="dashboard" class="tab active">
+      <div class="dashboard-content">
+        <div class="pomodoro-stats-container">
+            <div class="stat-card">
+                <h3>Total Sessions</h3>
+                <p id="total-sessions">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Study Time</h3>
+                <p id="total-study-time">0 hours</p>
+            </div>
+            <div class="stat-card">
+                <h3>Avg. Session Length</h3>
+                <p id="avg-session-length">0 mins</p>
+            </div>
+        </div>
+
+        <div id="study-graph-container" class="graph-container">
+          <canvas id="studyTimeChart"></canvas>
+          <p class="graph-placeholder" style="display: none;">Weekly Study Time by Subject (Graph Loading...)</p>
+        </div>
+        
+        <div class="monthly-productivity-stats-container">
+            <div class="stat-card">
+                <h3>Productive Months</h3>
+                <p id="productive-months-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Non-Productive Months</h3>
+                <p id="non-productive-months-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Most Productive Month</h3>
+                <p id="most-productive-month">N/A</p>
+            </div>
+        </div>
+
+        <div id="monthly-productivity-graph-container" class="graph-container">
+            <canvas id="monthlyProductivityChart"></canvas>
+            <p class="graph-placeholder" style="display: none;">Monthly Productivity (Graph Loading...)</p>
+        </div>
+
+        <div class="pomodoro-stats-container"> <div class="stat-card">
+                <h3>Total Tasks Added</h3>
+                <p id="total-tasks-added">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Tasks Completed</h3>
+                <p id="total-tasks-completed">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Completion Rate</h3>
+                <p id="completion-rate">0%</p>
+            </div>
+        </div>
+
+        <div id="task-completion-graph-container" class="graph-container">
+            <canvas id="taskCompletionChart"></canvas>
+            <p class="graph-placeholder" style="display: none;">Daily Task Completion (Graph Loading...)</p>
+        </div>
+
+        <div id="motivational-quote" class="motivational-quote">
+          Loading a motivational quote...
+        </div>
+      </div>
+    </section>
+
+    <section id="pomodoro" class="tab">
+      <div class="pomodoro-subject-display-container">
+        <span id="pomodoro-subject-display">No Subject Selected</span>
+      </div>
+      <div class="timer-circle" id="timer-display">25:00</div>
+      <div class="pomodoro-controls">
+        <button id="reset-btn">⟲ Reset</button>
+        <button id="settings-btn">⚙️ Settings</button>
+      </div>
+
+      <div id="settings-popup" class="popup hidden">
+        <h2>Pomodoro Settings</h2>
+        <label for="focus-time">Focus Time (min):</label>
+        <input type="number" id="focus-time" min="1" max="180" value="25" />
+        <label for="break-time">Break Time (min):</label>
+        <input type="number" id="break-time" min="1" max="60" value="5" />
+        <label for="long-break-time">Long Break (min):</label>
+        <input type="number" id="long-break-time" min="1" max="60" value="15" />
+        <label for="long-break-cycle">Long Break After (cycles):</label>
+        <input type="number" id="long-break-cycle" min="1" max="10" value="4" />
+
+        <label for="subject-select">Select Subject:</label>
+        <select id="subject-select">
+          <option value="none">No Subject Selected</option>
+          <option value="English">English</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Maths">Maths</option>
+        </select>
+
+        <div class="popup-actions">
+          <button id="save-settings">Save</button>
+          <button id="cancel-settings">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar" class="tab">
+      <div class="calendar-container">
+        <div class="calendar-main">
+          <div class="calendar-header">
+            <button id="prev-month" aria-label="Previous Month">‹</button>
+            <h2 id="month-year"></h2>
+            <button id="next-month" aria-label="Next Month">›</button>
+          </div>
+          <table class="calendar-table">
+            <thead>
+              <tr>
+                <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+              </tr>
+            </thead>
+            <tbody id="calendar-body">
+              </tbody>
+          </table>
+        </div>
+        <div class="upcoming-events">
+          <h3>Upcoming Events</h3>
+          <ul id="upcoming-events-list">
+            </ul>
+        </div>
+      </div>
+
+      <div id="event-modal" class="popup hidden">
+        <h2>Add Event</h2>
+        <p id="event-date-display"></p>
+        <label for="event-name">Event Name:</label>
+        <input type="text" id="event-name" placeholder="e.g. English Test" />
+        <div class="popup-actions">
+          <button id="save-event">Save</button>
+          <button id="cancel-event">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="todo" class="tab">
+        <div class="todo-container">
+            <div class="todo-date-nav">
+                <button id="prev-day-btn" aria-label="Previous Day">‹</button>
+                <h2 id="todo-date-display"></h2>
+                <button id="next-day-btn" aria-label="Next Day">›</button>
+            </div>
+            <div class="productive-day-select-group">
+                <label for="productive-day-status">Is this day productive?</label>
+                <select id="productive-day-status">
+                    <option value="none">None</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="todo-input-group">
+                <input type="text" id="new-todo-input" placeholder="Add a new task..." />
+                <button id="add-todo-btn">Add Task</button>
+            </div>
+            <ul id="todo-list">
+                </ul>
+        </div>
+    </section>
+
+    <section id="lifetime-todo" class="tab">
+        <div class="todo-container">
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--text-light);">Lifetime Tasks</h2>
+            <div class="todo-input-group">
+                <input type="text" id="lifetime-new-todo-input" placeholder="Add a new lifetime task..." />
+                <button id="lifetime-add-todo-btn">Add Task</button>
+            </div>
+            <ul id="lifetime-todo-list">
+            </ul>
+        </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./main.js"></script>
+  <script src="./calendar.js"></script>
+  <script src="./todo.js"></script>
+  <script src="./dashboard.js"></script>
+  <script src="./lifetimeTodo.js"></script>
+</body>
+</html>

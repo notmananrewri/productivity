@@ -1,0 +1,248 @@
+/* Universal box-sizing for consistent layout */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* NEW: Prevents horizontal scrolling */
+}
+
+:root {
+  --background-dark: #121212;
+  --background-dark-alt: #1e1e1e;
+  --border-gray: #333;
+  --text-light: #ddd;
+  --text-lighter: #aaa;
+  --green-muted: #2f593a; /* For focus running */
+  --yellow-muted: #8f7d38; /* For pause */
+  --red-break: #8B0000; /* NEW: For break running (Dark Red) */
+  --blue-long-break: #1E90FF; /* NEW: For long break running (Dodger Blue) */
+  --button-bg: #222;
+  --button-hover-bg: #333;
+}
+
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: var(--background-dark-alt);
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+nav button {
+  background: var(--button-bg);
+  border: 1.5px solid var(--border-gray);
+  color: var(--text-light);
+  padding: 14px 28px;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+nav button:hover {
+  background: var(--button-hover-bg);
+  border-color: var(--text-lighter);
+}
+
+main {
+  padding: 20px;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
+
+/* Pomodoro Subject Display */
+.pomodoro-subject-display-container {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: -30px; /* Pulls it closer to the timer circle */
+}
+
+#pomodoro-subject-display {
+    font-size: 1.2rem; /* Adjusted font size */
+    font-weight: 500; /* Adjusted font weight */
+    color: var(--text-light);
+    background-color: var(--background-dark-alt);
+    padding: 8px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-gray);
+    display: inline-block;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    min-width: 180px; /* Adjusted min-width for smaller text */
+    text-align: center;
+}
+
+.timer-circle {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  margin: 50px auto 30px auto;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.4s, color 0.3s;
+  background-color: var(--background-dark-alt);
+  color: var(--text-light);
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+.timer-circle.paused {
+  background-color: var(--yellow-muted);
+  color: #fff6bf;
+  box-shadow: 0 0 30px var(--yellow-muted);
+}
+
+/* Timer colors for different modes */
+.timer-circle.focus {
+  background-color: var(--green-muted);
+  color: #d0f0c0;
+  box-shadow: 0 0 30px var(--green-muted);
+}
+
+.timer-circle.break {
+  background-color: var(--red-break);
+  color: #ffe0e0;
+  box-shadow: 0 0 30px var(--red-break);
+}
+
+.timer-circle.longBreak {
+  background-color: var(--blue-long-break);
+  color: #e0f2ff;
+  box-shadow: 0 0 30px var(--blue-long-break);
+}
+
+
+.pomodoro-controls {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.pomodoro-controls button {
+  background: var(--button-bg);
+  color: var(--text-light);
+  border: 1.5px solid var(--border-gray);
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.3s, border-color 0.3s;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+}
+
+.pomodoro-controls button:hover {
+  background: var(--button-hover-bg);
+  border-color: var(--text-lighter);
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--background-dark-alt);
+  color: var(--text-light);
+  border: 1.5px solid var(--border-gray);
+  padding: 30px 30px 40px 30px;
+  border-radius: 18px;
+  width: 360px;
+  z-index: 1000;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.85);
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup label {
+  display: block;
+  margin: 15px 0 7px;
+  color: var(--text-lighter);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.popup input[type="number"],
+.popup select {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: var(--background-dark);
+  border: 1.5px solid var(--border-gray);
+  color: var(--text-light);
+  border-radius: 14px;
+  font-size: 1.1rem;
+  box-shadow: inset 0 0 7px rgba(0,0,0,0.6);
+  transition: border-color 0.3s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23ddd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 20px auto;
+}
+
+.popup input[type="number"]:focus,
+.popup select:focus {
+  border-color: var(--green-muted);
+  outline: none;
+  box-shadow: 0 0 12px var(--green-muted);
+}
+
+.popup input[type="number"]::-webkit-inner-spin-button, 
+.popup input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.popup-actions button {
+  background-color: var(--button-bg);
+  color: var(--text-light);
+  border: 1.5px solid var(--border-gray);
+  padding: 14px 28px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.3s, border-color 0.3s;
+  box-shadow: 0 0 8px rgba(0,0,0,0.7);
+}
+
+.popup-actions button:hover {
+  background-color: var(--button-hover-bg);
+  border-color: var(--green-muted);
+  box-shadow: 0 0 15px var(--green-muted);
+}
+
+h1, h2 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-light);
+}
+
+p {
+  color: var(--text-lighter);
+}

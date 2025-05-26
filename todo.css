@@ -1,0 +1,215 @@
+/* To-Do List Styles */
+.todo-container {
+    max-width: 500px;
+    margin: 30px auto;
+    background: var(--background-dark-alt);
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.todo-date-nav { /* Style for the date navigation container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.todo-date-nav h2 {
+    margin: 0; /* Remove default margin from h2 */
+    font-size: 1.8rem;
+    color: var(--text-light);
+    text-align: center;
+    min-width: 200px; /* Ensure enough space for the date string */
+}
+
+.todo-date-nav button { /* Style for navigation buttons */
+    background: var(--button-bg);
+    border: 1.5px solid var(--border-gray);
+    color: var(--text-light);
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    transition: background 0.3s, border-color 0.3s;
+    user-select: none;
+}
+
+.todo-date-nav button:hover {
+    background: var(--button-hover-bg);
+    border-color: var(--text-lighter);
+}
+
+/* NEW: Productive Day Select Group and Select Element Styles */
+.productive-day-select-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.productive-day-select-group label {
+    font-weight: 600;
+    color: var(--text-lighter);
+    font-size: 1rem;
+    user-select: none;
+}
+
+#productive-day-status {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-gray);
+    background: var(--background-dark);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    cursor: pointer;
+    /* Custom dropdown arrow styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ddd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 20px auto;
+    min-width: 120px; /* Ensure it's wide enough for text */
+}
+
+#productive-day-status:focus {
+    outline: none;
+    border-color: var(--green-muted);
+    box-shadow: 0 0 8px rgba(var(--green-muted), 0.5);
+}
+
+
+.todo-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Updated to include Lifetime To-Do input */
+#new-todo-input,
+#lifetime-new-todo-input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-gray);
+    background: var(--background-dark);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+/* Updated to include Lifetime To-Do input focus */
+#new-todo-input:focus,
+#lifetime-new-todo-input:focus {
+    outline: none;
+    border-color: var(--green-muted);
+    box-shadow: 0 0 8px rgba(var(--green-muted), 0.5);
+}
+
+/* Updated to include Lifetime To-Do button */
+#add-todo-btn,
+#lifetime-add-todo-btn {
+    background: var(--button-bg);
+    border: 1.5px solid var(--border-gray);
+    color: var(--text-light);
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background 0.3s, border-color 0.3s;
+    user-select: none;
+}
+
+/* Updated to include Lifetime To-Do button hover */
+#add-todo-btn:hover,
+#lifetime-add-todo-btn:hover {
+    background: var(--button-hover-bg);
+    border-color: var(--text-lighter);
+}
+
+#todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    color: var(--text-light);
+    font-size: 1.05rem;
+    word-break: break-word;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: grab; /* Indicate draggable */
+}
+
+.todo-item.completed {
+    background-color: var(--green-muted); /* Darker green for completed tasks */
+    border-color: var(--green-muted);
+    opacity: 0.8;
+}
+
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: var(--text-lighter);
+}
+
+.todo-item input[type="checkbox"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green-muted); /* Style checkbox itself */
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.todo-item span {
+    flex-grow: 1;
+}
+
+/* Updated Delete Button Styling */
+.todo-item .delete-todo-btn {
+    background-color: transparent; /* Make background transparent */
+    color: #b33a3a; /* Red for the icon */
+    border: none;
+    padding: 0;
+    font-size: 1.3rem; /* Increase font size for better visibility */
+    cursor: pointer;
+    margin-left: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    transition: color 0.3s, transform 0.2s; /* Transition for hover effects */
+}
+
+.todo-item .delete-todo-btn:hover {
+    color: #ff4d4d; /* Lighter red on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.no-todos-message {
+    text-align: center;
+    color: var(--text-lighter);
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Drag and Drop Styles */
+.todo-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed var(--green-muted);
+}

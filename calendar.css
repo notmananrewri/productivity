@@ -1,0 +1,296 @@
+/* Existing calendar and popup styles */
+
+.calendar-container {
+  display: flex;
+  flex-direction: column; /* Default for smaller screens */
+  gap: 20px;
+  max-width: 800px; /* Adjust as needed */
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) { /* Adjust breakpoint as needed for larger screens */
+  .calendar-container {
+    flex-direction: row; /* Side-by-side on larger screens */
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+  }
+}
+
+.calendar-main {
+  flex: 1; /* Allows calendar to take available space */
+  min-width: 380px; /* Ensure calendar doesn't get too small */
+}
+
+.upcoming-events {
+  flex: 1; /* Allows upcoming events to take available space */
+  background: var(--background-dark-alt);
+  border: 1px solid var(--border-gray);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  min-width: 280px; /* Minimum width for the upcoming events list */
+}
+
+.upcoming-events h3 {
+  margin-top: 0;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.upcoming-events ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.upcoming-events li {
+  background-color: var(--background-dark);
+  border: 1px solid var(--border-gray);
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
+}
+
+.upcoming-events li:last-child {
+  margin-bottom: 0;
+}
+
+.upcoming-events li strong {
+  color: var(--text-lighter);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Calendar Styles */
+.calendar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  color: var(--text-light);
+}
+
+.calendar-header button {
+  background: var(--button-bg);
+  border: 1.5px solid var(--border-gray);
+  color: var(--text-light);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  transition: background 0.3s, border-color 0.3s;
+  user-select: none;
+}
+
+.calendar-header button:hover {
+  background: var(--button-hover-bg);
+  border-color: var(--text-lighter);
+}
+
+#month-year {
+  font-weight: 700;
+  font-size: 1.4rem;
+  user-select: none;
+  min-width: 140px;
+  text-align: center;
+}
+
+.calendar-table {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.calendar-table th,
+.calendar-table td {
+  width: 14.2857%;
+  height: 50px;
+  border: 1px solid var(--border-gray);
+  color: var(--text-light); /* Default text color */
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 600;
+  user-select: none;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.calendar-table td.empty {
+  background-color: var(--background-dark-alt);
+}
+
+.calendar-table td.day {
+  cursor: default;
+}
+
+.calendar-table td.day:hover {
+  background-color: var(--button-hover-bg);
+  color: var(--text-light);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.calendar-table td.today {
+  background-color: var(--green-muted);
+  color: var(--text-light);
+}
+
+/* Productivity Day Styles */
+.calendar-table td.productive-day-calendar {
+    color: #00FF00; /* Bright Green */
+    font-weight: 700;
+}
+
+.calendar-table td.non-productive-day-calendar {
+    color: #FF0000; /* Bright Red */
+    font-weight: 700;
+}
+
+
+/* Popup Modal */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--background-dark-alt);
+  border: 1px solid var(--border-gray);
+  border-radius: 12px;
+  padding: 24px 32px;
+  width: 300px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup h2 {
+  margin-top: 0;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 12px;
+  user-select: none;
+}
+
+.popup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-light);
+  user-select: none;
+}
+
+.popup input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-gray);
+  margin-bottom: 16px;
+  font-size: 1rem;
+  background: var(--background-dark);
+  color: var(--text-light);
+}
+
+/* UPDATED: Popup Actions for buttons */
+.popup-actions {
+  display: flex;
+  justify-content: space-between; /* Distribute space evenly */
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px; /* Adjusted margin */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens if needed, though aiming for one line */
+}
+
+.popup-actions button {
+  background: var(--button-bg);
+  border: 1.5px solid var(--border-gray);
+  color: var(--text-light);
+  padding: 8px 12px; /* Slightly reduced padding to fit more buttons */
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.9rem; /* Slightly reduced font size for buttons */
+  transition: background 0.3s, border-color 0.3s;
+  user-select: none;
+  flex-grow: 1; /* Allow buttons to grow and fill space */
+  min-width: 80px; /* Ensure minimum width for readability */
+}
+
+.popup-actions button:hover {
+  background: var(--button-hover-bg);
+  border-color: var(--text-lighter);
+}
+
+.calendar-table td.has-event {
+  background-color: #264653;
+  color: #fff;
+}
+.calendar-table td.has-event:hover {
+  background-color: #325d6e;
+}
+
+/* Custom Modal Styles (for alert/confirm replacement) */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Higher than other popups */
+}
+
+.custom-modal-content {
+    background: var(--background-dark-alt);
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 25px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    color: var(--text-light);
+}
+
+.custom-modal-content p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+.custom-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.custom-modal-content button {
+    background: var(--button-bg);
+    border: 1.5px solid var(--border-gray);
+    color: var(--text-light);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.custom-modal-content button:hover {
+    background: var(--button-hover-bg);
+    border-color: var(--text-lighter);
+}

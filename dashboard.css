@@ -1,0 +1,103 @@
+/* Dashboard Styles */
+.dashboard-content {
+    max-width: 800px;
+    margin: 30px auto;
+    background: var(--background-dark-alt);
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+/* Style for the main dashboard greeting (removed from HTML, but keeping style if needed later) */
+#dashboard h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text-light);
+    font-size: 2.5rem;
+}
+
+#username-display {
+    color: var(--green-muted); /* A nice accent color for the user's name */
+    font-weight: 800;
+}
+
+/* Pomodoro Stats Container */
+.pomodoro-stats-container,
+.monthly-productivity-stats-container { /* NEW: Apply same styling to monthly stats container */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+}
+
+.stat-card {
+    flex: 1; /* Allows cards to grow and shrink */
+    min-width: 150px; /* Minimum width for each stat card */
+    padding: 15px 10px;
+    border-radius: 8px;
+    background-color: var(--background-dark-alt);
+    border: 1px solid var(--border-gray);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.stat-card h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: var(--text-lighter);
+    margin-bottom: 8px;
+}
+
+.stat-card p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--green-muted); /* Highlight stats with a key color */
+    margin: 0;
+}
+
+
+/* Styles for the graph container */
+.graph-container {
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 250px; /* Give it some height for visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px; /* Space between graph and quote */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+    position: relative; /* Needed for canvas sizing */
+}
+
+.graph-placeholder {
+    color: #FFFFFF; /* Explicitly set to white */
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+/* Ensure canvas is responsive within its container */
+#studyTimeChart,
+#monthlyProductivityChart { /* NEW: Apply to both canvases */
+    max-width: 100%;
+    height: auto;
+}
+
+.motivational-quote {
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--text-lighter);
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px dashed var(--border-gray);
+    border-radius: 10px;
+    background-color: var(--background-dark);
+}
