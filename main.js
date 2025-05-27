@@ -10,14 +10,12 @@ tabs.forEach(tab => {
         sec.classList.add('active'); // Activate the clicked tab
       }
     });
-    // If switching to dashboard, re-render all dashboard components
-    if (target === 'dashboard' && window.dashboardApp) {
+    // If switching to dashboard, re-render the graph
+    if (target === 'dashboard' && window.dashboardApp && typeof window.dashboardApp.renderStudyGraph === 'function') {
         window.dashboardApp.renderStudyGraph();
-        window.dashboardApp.renderMonthlyProductivityGraph();
+        window.dashboardApp.renderMonthlyProductivityGraph(); // Ensure monthly graph also re-renders
         window.dashboardApp.renderPomodoroStats(); // Ensure pomodoro stats also re-render
         window.dashboardApp.renderMonthlyProductivityStats(); // Ensure monthly stats also re-render
-        window.dashboardApp.renderTaskCompletionStats(); // NEW: Render task completion stats
-        window.dashboardApp.renderTaskCompletionGraph(); // NEW: Render task completion graph
     }
   });
 });
@@ -52,12 +50,15 @@ let longBreakCycle = parseInt(longBreakCycleInput.value);
 let timeLeft = focusTime;
 let selectedSubject = localStorage.getItem('pomodoroSelectedSubject') || 'No Subject Selected'; // Load from localStorage
 
-// Function to play a simple beep sound
-function playBeepSound() {
+// Alarm sound variables
+let alarmInterval = null; // To control the intermittent alarm
+
+// NEW: Function to play a single, short beep
+function playSingleBeep() {
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         if (!audioContext) {
-            console.warn("AudioContext not supported, cannot play sound.");
+            console.warn("AudioContext not supported, cannot play beep.");
             return;
         }
 
@@ -67,25 +68,43 @@ function playBeepSound() {
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
 
-        oscillator.type = 'sine'; // or 'square', 'sawtooth', 'triangle'
-        oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note (440 Hz)
+        oscillator.type = 'sine'; // Softer waveform
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime); // Slightly higher, less harsh frequency
 
-        // Set volume (optional, can be adjusted)
-        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // 0.5 is half volume
+        gainNode.gain.setValueAtTime(0.7, audioContext.currentTime); // Volume
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15); // Fade out quickly
 
-        oscillator.start();
-        // Stop the sound after a short duration (e.g., 0.5 seconds)
-        oscillator.stop(audioContext.currentTime + 0.5);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2); // Play for 0.2 seconds
 
-        // Optionally, fade out the sound
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+        // Close the audio context after the sound has played to release resources
+        oscillator.onended = () => {
+            audioContext.close();
+        };
 
     } catch (e) {
-        console.error("Error playing sound:", e);
-        // Fallback for browsers that don't support Web Audio API or if there's an error
-        // You might consider a very simple visual alert here if sound fails.
+        console.error("Error playing single beep:", e);
     }
 }
+
+// Function to start the intermittent alarm
+function startIntermittentAlarm() {
+    // Stop any existing alarm first
+    stopAlarmSound();
+    // Play the first beep immediately
+    playSingleBeep();
+    // Then set an interval to play subsequent beeps
+    alarmInterval = setInterval(playSingleBeep, 2000); // Beep every 2 seconds
+}
+
+// Function to stop the intermittent alarm sound
+function stopAlarmSound() {
+    if (alarmInterval) {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+    }
+}
+
 
 // Function to record a completed focus session
 function recordStudySession(subject, durationMinutes) {
@@ -120,9 +139,11 @@ function updateDisplay() {
 
 function updateTimerColor() {
   // First, remove all mode-specific and state-specific classes
-  timerDisplay.classList.remove('running', 'paused', 'focus', 'break', 'longBreak');
+  timerDisplay.classList.remove('running', 'paused', 'focus', 'break', 'longBreak', 'waiting-for-click');
 
-  if (isRunning) {
+  if (isWaitingForClick) { // Check for waiting state first
+    timerDisplay.classList.add('waiting-for-click');
+  } else if (isRunning) {
     // If running, apply the current mode's color
     timerDisplay.classList.add(currentMode);
     timerDisplay.classList.add('running'); // Keep 'running' for potential animations
@@ -143,6 +164,9 @@ function startTimer() {
   if (isRunning) return;
   isRunning = true;
   isPaused = false;
+  isWaitingForClick = false; // Ensure this is false when starting
+  stopAlarmSound(); // Ensure alarm is off if somehow still on
+
   // Make sure the subject is the one currently selected in the dropdown when starting
   // This is important because the user might change it without saving settings.
   selectedSubject = subjectSelect.value === 'none' ? 'No Subject Selected' : subjectSelect.options[subjectSelect.selectedIndex].text;
@@ -154,29 +178,15 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timer);
       isRunning = false; // Timer has finished
-      playBeepSound(); // Play sound when timer ends
+      isPaused = true; // Set to paused state
+      isWaitingForClick = true; // Set waiting state
+      startIntermittentAlarm(); // NEW: Play intermittent alarm
+      updateTimerColor(); // Update color to waiting state
+      updateDisplay(); // Ensure display is 00:00
 
-      if (currentMode === 'focus') {
-        // Record the completed focus session
-        recordStudySession(selectedSubject, focusTime / 60); // Record original focus time in minutes
-        cycleCount++;
-        if (cycleCount % longBreakCycle === 0) {
-          currentMode = 'longBreak';
-          timeLeft = longBreakTime;
-        } else {
-          currentMode = 'break';
-          timeLeft = breakTime;
-        }
-      } else { // If it was break or longBreak, next is always focus
-        currentMode = 'focus';
-        timeLeft = focusTime;
-        // When returning to focus, reset selectedSubject to current dropdown value
-        selectedSubject = subjectSelect.value === 'none' ? 'No Subject Selected' : subjectSelect.options[subjectSelect.selectedIndex].text;
-        localStorage.setItem('pomodoroSelectedSubject', selectedSubject);
-      }
-      updateDisplay();
-      // Auto-start next session, so call startTimer to apply the new mode's color and begin countdown
-      startTimer();
+      // REMOVED: Automatic startTimer() call here
+      // The user now has to click to proceed
+      return; // Exit to prevent further execution until clicked
     } else {
       updateDisplay();
     }
@@ -188,6 +198,8 @@ function pauseTimer() {
   clearInterval(timer);
   isRunning = false;
   isPaused = true;
+  isWaitingForClick = false; // Not waiting, just paused
+  stopAlarmSound(); // Ensure alarm is off if pausing mid-alarm (unlikely but good)
   updateTimerColor(); // Update color immediately when pausing
 }
 
@@ -195,9 +207,11 @@ function resetTimer() {
   clearInterval(timer);
   isRunning = false;
   isPaused = false;
+  isWaitingForClick = false; // Reset waiting state
   currentMode = 'focus'; // Always reset to focus mode, but color will be grey initially
   cycleCount = 0;
   timeLeft = focusTime;
+  stopAlarmSound(); // Stop alarm on reset
   updateDisplay();
   updateTimerColor(); // Update color to the "grey" reset state
   
@@ -215,11 +229,35 @@ function resetTimer() {
 }
 
 timerDisplay.addEventListener('click', () => {
-  if (!isRunning && !isPaused) {
+  if (isWaitingForClick) { // If waiting, acknowledge and proceed
+    isWaitingForClick = false;
+    stopAlarmSound(); // Stop the alarm
+    
+    // Logic to determine next mode (copied from original timer completion)
+    if (currentMode === 'focus') {
+      // Record the completed focus session (already done when timeLeft hits 0)
+      cycleCount++;
+      if (cycleCount % longBreakCycle === 0) {
+        currentMode = 'longBreak';
+        timeLeft = longBreakTime;
+      } else {
+        currentMode = 'break';
+        timeLeft = breakTime;
+      }
+    } else { // If it was break or longBreak, next is always focus
+      currentMode = 'focus';
+      timeLeft = focusTime;
+      // When returning to focus, reset selectedSubject to current dropdown value
+      selectedSubject = subjectSelect.value === 'none' ? 'No Subject Selected' : subjectSelect.options[subjectSelect.selectedIndex].text;
+      localStorage.setItem('pomodoroSelectedSubject', selectedSubject);
+    }
+    updateDisplay(); // Update display with new time/mode
+    startTimer(); // Start the next phase
+  } else if (!isRunning && !isPaused) { // Start from initial state
     startTimer();
-  } else if (isRunning) {
+  } else if (isRunning) { // Pause if running
     pauseTimer();
-  } else if (isPaused) {
+  } else if (isPaused) { // Resume if paused
     startTimer();
   }
 });
