@@ -20,8 +20,9 @@ body {
   --text-lighter: #aaa;
   --green-muted: #2f593a; /* For focus running */
   --yellow-muted: #8f7d38; /* For pause */
-  --red-break: #8B0000; /* NEW: For break running (Dark Red) */
-  --blue-long-break: #1E90FF; /* NEW: For long break running (Dodger Blue) */
+  --red-break: #8B0000; /* For break running (Dark Red) */
+  --purple-long-break: #9370DB; /* UPDATED: For long break running (Medium Purple) */
+  --waiting-for-click-color: #FFD700; /* NEW: Gold for waiting state */
   --button-bg: #222;
   --button-hover-bg: #333;
 }
@@ -95,10 +96,14 @@ main {
   margin: 50px auto 30px auto;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.4s, color 0.3s;
+  transition: background-color 0.4s, color 0.3s, box-shadow 0.4s; /* Added box-shadow to transition */
   background-color: var(--background-dark-alt);
   color: var(--text-light);
   box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+.timer-circle.running {
+  /* This class will be applied in combination with specific mode classes */
 }
 
 .timer-circle.paused {
@@ -121,9 +126,27 @@ main {
 }
 
 .timer-circle.longBreak {
-  background-color: var(--blue-long-break);
-  color: #e0f2ff;
-  box-shadow: 0 0 30px var(--blue-long-break);
+  background-color: var(--purple-long-break); /* UPDATED: Changed to purple */
+  color: #e0f2ff; /* Adjust text color for new background if needed */
+  box-shadow: 0 0 30px var(--purple-long-break);
+}
+
+/* NEW: Style for when the timer is waiting for a click */
+.timer-circle.waiting-for-click {
+    background-color: var(--waiting-for-click-color); /* Gold color */
+    color: #333; /* Dark text for contrast */
+    box-shadow: 0 0 40px var(--waiting-for-click-color); /* More prominent shadow */
+    animation: pulse-glow 1.5s infinite alternate; /* Add a subtle pulse animation */
+}
+
+/* NEW: Keyframes for the pulse glow animation */
+@keyframes pulse-glow {
+    from {
+        box-shadow: 0 0 20px var(--waiting-for-click-color);
+    }
+    to {
+        box-shadow: 0 0 60px var(--waiting-for-click-color);
+    }
 }
 
 
